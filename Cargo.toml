@@ -1,0 +1,24 @@
+[package]
+name = "testing"
+version = "0.1.0"
+authors = ["ojnline <58391142+ojnline@users.noreply.github.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["rendy/empty"]
+metal = ["rendy/metal"]
+dx12 = ["rendy/dx12"]
+vulkan = ["rendy/vulkan"]
+empty = ["rendy/empty"]
+
+[dependencies]
+lazy_static = "1.4.0"
+genmesh = "0.6"
+nalgebra = "0.20.0"
+
+[dependencies.rendy]
+optional = true
+version = "0.5.1"
+features = ["base", "texture-image", "shader-compiler", "init-winit"]
