@@ -59,21 +59,21 @@ lazy_static::lazy_static! {
 }
 
 #[derive(Debug, Default)]
-pub struct MeshPipelineDesc;
+pub struct PipelineDesc;
 
 #[derive(Debug)]
-pub struct MeshPipeline;
+pub struct Pipeline;
 
-impl<B> SimpleGraphicsPipelineDesc<B, Aux<B>> for MeshPipelineDesc
+impl<B> SimpleGraphicsPipelineDesc<B, Aux<B>> for PipelineDesc
 where
     B: hal::Backend,
 {
-    type Pipeline = MeshPipeline;
+    type Pipeline = Pipeline;
 
     fn load_shader_set(&self, factory: &mut Factory<B>, _aux: &Aux<B>) -> ShaderSet<B> {
         SHADERS.build(factory, Default::default()).unwrap()
     }
-
+    
     fn vertices(
         &self,
     ) -> Vec<(
@@ -82,15 +82,15 @@ where
         hal::pso::VertexInputRate,
     )> {
         vec![SHADER_REFLECTION
-            .attributes(&["position"])
-            .unwrap()
-            .gfx_vertex_input_desc(hal::pso::VertexInputRate::Vertex)]
+        .attributes(&["position"])
+        .unwrap()
+        .gfx_vertex_input_desc(hal::pso::VertexInputRate::Vertex)]
     }
-
+    
     fn layout(&self) -> Layout {
         SHADER_REFLECTION.layout().unwrap()
     }
-
+    
     fn build(
         self,
         _ctx: &GraphContext<B>,
@@ -101,15 +101,15 @@ where
         _images: Vec<NodeImage>,
         _set_layouts: &[Handle<DescriptorSetLayout<B>>],
     ) -> Result<Self::Pipeline, hal::pso::CreationError> {        
-        Ok(MeshPipeline{})
+        Ok(Pipeline{})
     }
 }
 
-impl<B> SimpleGraphicsPipeline<B, Aux<B>> for MeshPipeline
+impl<B> SimpleGraphicsPipeline<B, Aux<B>> for Pipeline
 where
     B: hal::Backend,
 {
-    type Desc = MeshPipelineDesc;
+    type Desc = PipelineDesc;
 
     fn draw(
         &mut self,

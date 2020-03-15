@@ -46,20 +46,20 @@ lazy_static::lazy_static! {
 }
 
 #[derive(Debug, Default)]
-pub struct PostPipelineDesc;
+pub struct PipelineDesc;
 
 #[derive(Debug)]
-pub struct PostPipeline<B: hal::Backend> {
+pub struct Pipeline<B: hal::Backend> {
     sets: Vec<B::DescriptorSet>,
     descriptor_pool: B::DescriptorPool,
-    image_sampler: Handle<Sampler<B>>,
+    image_sampler: Escape<Sampler<B>>,
     image_view: Escape<ImageView<B>>
 }
-impl<B> SimpleGraphicsPipelineDesc<B, Aux<B>> for PostPipelineDesc
+impl<B> SimpleGraphicsPipelineDesc<B, Aux<B>> for PipelineDesc
 where
     B: hal::Backend,
 {
-    type Pipeline = PostPipeline<B>;
+    type Pipeline = Pipeline<B>;
 
     fn images(&self) -> Vec<ImageAccess> {
         vec![ImageAccess {
@@ -78,18 +78,28 @@ where
         SHADERS.build(factory, Default::default()).unwrap()
     }
 
-    fn vertices(
-        &self,
-    ) -> Vec<(
-        Vec<hal::pso::Element<hal::format::Format>>,
-        hal::pso::ElemStride,
-        hal::pso::VertexInputRate,
-    )> {
-        Vec::new()
-    }
-
     fn layout(&self) -> Layout {
-        SHADER_REFLECTION.layout().unwrap()
+        Layout {
+            sets: vec![SetLayout {
+                bindings: vec![
+                    hal::pso::DescriptorSetLayoutBinding {
+                        binding: 0,
+                        ty: hal::pso::DescriptorType::Sampler,
+                        count: 1,
+                        stage_flags: hal::pso::ShaderStageFlags::FRAGMENT,
+                        immutable_samplers: false,
+                    },
+                    hal::pso::DescriptorSetLayoutBinding {
+                        binding: 1,
+                        ty: hal::pso::DescriptorType::SampledImage,
+                        count: 1,
+                        stage_flags: hal::pso::ShaderStageFlags::FRAGMENT,
+                        immutable_samplers: false,
+                    }
+                ],
+            }],
+            push_constants: Vec::new(),
+        }
     }
 
     fn build(
@@ -123,12 +133,12 @@ where
         };
         
         let image_sampler = factory
-            .get_sampler(SamplerDesc::new(Filter::Nearest, WrapMode::Clamp))
+            .create_sampler(SamplerDesc::new(Filter::Nearest, WrapMode::Clamp))
             .unwrap();
             
         let image_handle = ctx
             .get_image(images[0].id)
-            .expect("Expected input image.");
+            .expect("No input image supplied.");
 
         let image_view = factory
             .create_image_view(
@@ -167,7 +177,7 @@ where
             }
         }
 
-        Ok( PostPipeline {
+        Ok( Pipeline {
             sets,
             image_view,
             image_sampler,
@@ -176,11 +186,11 @@ where
     }
 }
 
-impl<B> SimpleGraphicsPipeline<B, Aux<B>> for PostPipeline<B>
+impl<B> SimpleGraphicsPipeline<B, Aux<B>> for Pipeline<B>
 where
     B: hal::Backend,
 {
-    type Desc = PostPipelineDesc;
+    type Desc = PipelineDesc;
 
     fn draw(
         &mut self,

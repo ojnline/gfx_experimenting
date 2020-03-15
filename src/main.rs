@@ -250,7 +250,7 @@ fn main() {
         );
 
         let mesh_pass = graph_builder.add_node(
-            mesh::MeshPipeline::builder()
+            mesh::Pipeline::builder()
                 .into_subpass()
                 .with_color(hdr)
                 .with_depth_stencil(depth)
@@ -258,7 +258,7 @@ fn main() {
         );
 
         let posteffect_pass = graph_builder.add_node(
-            post_effect::PostPipeline::builder()
+            post_effect::Pipeline::builder()
                 .with_image(hdr)
                 .into_subpass()
                 .with_dependency(mesh_pass)
