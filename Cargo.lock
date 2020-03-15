@@ -857,6 +857,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nalgebra-glm"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ae78da13d67be0d2e4ab567490477e4c9f314fc151ddfff6713b15bdbb2aa72"
+dependencies = [
+ "alga",
+ "approx 0.3.2",
+ "nalgebra",
+ "num-traits 0.2.11",
+]
+
+[[package]]
 name = "net2"
 version = "0.2.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1750,6 +1762,7 @@ dependencies = [
  "genmesh",
  "lazy_static",
  "nalgebra",
+ "nalgebra-glm",
  "rendy",
 ]
 

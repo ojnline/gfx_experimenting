@@ -17,8 +17,9 @@ empty = ["rendy/empty"]
 lazy_static = "1.4.0"
 genmesh = "0.6"
 nalgebra = "0.20.0"
+nalgebra-glm = "0.6.0"
 
 [dependencies.rendy]
 optional = true
 version = "0.5.1"
-features = ["base", "texture-image", "shader-compiler", "init-winit"]
+features = ["base", "texture-image", "shader-compiler", "init-winit", "spirv-reflection"]
